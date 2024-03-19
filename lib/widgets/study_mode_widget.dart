@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kana_flutter/core/models/alphabet.dart';
 import 'package:kana_flutter/core/models/study_mode.dart';
-import 'package:kana_flutter/widgets/batch_selection_widget.dart';
+import 'package:kana_flutter/widgets/batch_size_widget.dart';
 
 class StudyModeWidget extends StatelessWidget {
 
@@ -11,42 +11,50 @@ class StudyModeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var isWider = size.width > size.height;
+
     return Scaffold(
       appBar: AppBar(title: Text('Select study mode')),
-      body: Column(
+      body: Flex(
+        direction: isWider ? Axis.horizontal : Axis.vertical,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            flex: 5,
-            child: TextButton(
-                child: Text('Practice', style: TextStyle(color: Colors.white)),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BatchSelectionWidget(this.alphabet, StudyMode.practice)),
-                  );
-                },
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.green))),
-          ),
-          Expanded(
-              flex: 5,
-              child: TextButton(
-                  child:
-                  Text('Test', style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BatchSelectionWidget(this.alphabet, StudyMode.test)),
-                    );
-                  },
-                  style: ButtonStyle(
-                      backgroundColor:
-                      MaterialStateProperty.all(Colors.blue)))),
-        ],
+        children: _buildButtons(context)
       ),
     );
+  }
+
+  List<Widget> _buildButtons(BuildContext context) {
+    List<Widget> result = [];
+
+    final studyModes = [
+      StudyMode.practice,
+      StudyMode.test
+    ];
+
+    for (var studyMode in studyModes) {
+      result.add(Expanded(
+          flex: 1,
+          child: Stack(children: [
+            SizedBox.expand(child: Image(fit: BoxFit.cover, image: AssetImage("resources/graphics/" + studyMode.image), width: double.infinity)),
+            SizedBox.expand(child: TextButton(
+              style: ButtonStyle(
+                splashFactory: NoSplash.splashFactory,
+                overlayColor: MaterialStateProperty.all(Colors.transparent),
+              ),
+              child: Text(studyMode.name, style: TextStyle(color: Colors.white, fontSize: 50)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BatchSizeWidget(this.alphabet, studyMode)),
+                );
+              },
+            ))
+          ])
+      ));
+    }
+
+    return result;
   }
 }

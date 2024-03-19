@@ -11,7 +11,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kana writing practice',
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primaryColor: Colors.red,
+        appBarTheme: AppBarTheme(
+          color: const Color(0xFF424242),
+          foregroundColor: Colors.white
+        )
       ),
       home: AlphabetWidget(),
     );

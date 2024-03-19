@@ -32,6 +32,10 @@ class AlphabetWidget extends StatelessWidget {
           child: Stack(children: [
             SizedBox.expand(child: Image(fit: BoxFit.cover, image: AssetImage("resources/graphics/" + alphabet.image), width: double.infinity)),
             SizedBox.expand(child: TextButton(
+              style: ButtonStyle(
+                splashFactory: NoSplash.splashFactory,
+                overlayColor: MaterialStateProperty.all(Colors.transparent)
+              ),
               child: Text(alphabet.name, style: TextStyle(color: Colors.white, fontSize: 50)),
               onPressed: () {
                 Navigator.push(

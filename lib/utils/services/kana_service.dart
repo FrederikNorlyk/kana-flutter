@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:kana_flutter/core/models/alphabet.dart';
-import 'package:kana_flutter/core/models/batch.dart';
 import 'package:kana_flutter/core/models/kana_item.dart';
 import 'package:kana_flutter/utils/helpers/character.dart';
 
@@ -14,14 +13,9 @@ class KanaService {
 
   var _limit;
 
-  KanaService(Alphabet alphabet, Batch batch, int limit) {
-    if (batch == Batch.all) {
-      this._kana = Character.getAllIn(alphabet);
-      this._romanji = Character.getAllIn(Alphabet.romanji);
-    } else {
-      this._kana = Character.get(alphabet, batch);
-      this._romanji = Character.get(Alphabet.romanji, batch);
-    }
+  KanaService(Alphabet alphabet, int limit) {
+    this._kana = Character.get(alphabet);
+    this._romanji = Character.get(Alphabet.romanji);
 
     this._limit = limit;
   }
