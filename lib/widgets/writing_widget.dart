@@ -81,7 +81,16 @@ class _WritingWidgetState extends State<WritingWidget> {
                         : [textBox, signature]
                   ),
                 ),
-                Expanded(flex: 1, child: TextButton(onPressed: () => _nextButtonPressed(context), child: Text('Next')))
+                Expanded(
+                  flex: 2, 
+                  child: TextButton(
+                    onPressed: () => _nextButtonPressed(context), 
+                    child: Text('Next'),
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(fontSize: 40),
+                    ),
+                  )
+                )
               ]
             )
         )
