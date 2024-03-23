@@ -5,51 +5,45 @@ import 'package:kana_flutter/core/models/kana_item.dart';
 import 'package:kana_flutter/utils/helpers/character.dart';
 
 class KanaService {
-  late List<String> _seenKana = [];
-  late List<String> _seenRomanji = [];
+  late List<String> _seenKanaCharacters = [];
+  late List<String> _seenRomanjiCharacters = [];
 
-  late List<String> _kana;
-  late List<String> _romanji;
+  late List<String> _remainingKanaCharacters;
+  late List<String> _remainingRomanjiCharacters;
 
-  var _limit;
+  late int _limit;
+  
+  final random = Random();
 
   KanaService(Alphabet alphabet, int limit) {
-    this._kana = Character.get(alphabet);
-    this._romanji = Character.get(Alphabet.romanji);
-
+    this._remainingKanaCharacters = Character.get(alphabet);
+    this._remainingRomanjiCharacters = Character.get(Alphabet.romanji);
     this._limit = limit;
   }
 
   void restart() {
-    _kana = List.from(_seenKana);
-    _romanji = List.from(_seenRomanji);
+    _remainingKanaCharacters = List.from(_seenKanaCharacters);
+    _remainingRomanjiCharacters = List.from(_seenRomanjiCharacters);
 
-    _seenKana.clear();
-    _seenRomanji.clear();
+    _seenKanaCharacters.clear();
+    _seenRomanjiCharacters.clear();
   }
 
   KanaItem? getNextKanaItem() {
-    if (_kana.length == 0 || _seenKana.length == _limit) {
+    if (_remainingKanaCharacters.length == 0 || _seenKanaCharacters.length == _limit) {
       return null;
     }
 
-    var index;
-    if (_kana.length == 1) {
-      index = 0;
-    } else {
-      final rng = Random();
-      index = rng.nextInt(_kana.length - 1);
-    }
+    var index = random.nextInt(_remainingKanaCharacters.length);
+    var kana = _remainingKanaCharacters[index];
+    var romanji = _remainingRomanjiCharacters[index];
+    var kanaItem = KanaItem(romanji, kana);
 
-    var kanaCharacter = _kana[index];
-    var romanjiCharacter = _romanji[index];
-    var kanaItem = KanaItem(romanjiCharacter, kanaCharacter);
+    _seenKanaCharacters.add(kana);
+    _seenRomanjiCharacters.add(romanji);
 
-    _seenKana.add(kanaCharacter);
-    _seenRomanji.add(romanjiCharacter);
-
-    _kana.removeAt(index);
-    _romanji.removeAt(index);
+    _remainingKanaCharacters.removeAt(index);
+    _remainingRomanjiCharacters.removeAt(index);
 
     return kanaItem;
   }
