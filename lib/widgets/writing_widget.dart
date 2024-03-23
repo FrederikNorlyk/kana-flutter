@@ -22,7 +22,7 @@ class _WritingWidgetState extends State<WritingWidget> {
   var _isShowingKana;
 
   final _signatureController = SignatureController(
-    penStrokeWidth: 5,
+    penStrokeWidth: 8,
     penColor: Colors.black87,
     exportBackgroundColor: Colors.black87,
   );
