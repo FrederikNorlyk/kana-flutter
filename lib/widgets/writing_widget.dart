@@ -17,7 +17,7 @@ class WritingWidget extends StatefulWidget {
 }
 
 class _WritingWidgetState extends State<WritingWidget> {
-  late final _service;
+  late final _kanaService;
   KanaItem? _kanaItem;
   var _isShowingKana;
 
@@ -27,14 +27,9 @@ class _WritingWidgetState extends State<WritingWidget> {
     exportBackgroundColor: Colors.black87,
   );
 
-  final textStyle = TextStyle(
-    fontSize: 100,
-    color: Colors.white
-  );
-
   _WritingWidgetState(WritingWidget widget) {
-    _service = new KanaService(widget._alphabet, widget._batchSize);
-    _kanaItem = _service.getNextKanaItem();
+    _kanaService = new KanaService(widget._alphabet, widget._batchSize);
+    _kanaItem = _kanaService.getNextKanaItem();
     _isShowingKana = widget._mode == StudyMode.practice;
   }
 
@@ -57,7 +52,12 @@ class _WritingWidgetState extends State<WritingWidget> {
             color: Colors.black54,
             child: Align(
                 alignment: Alignment.center,
-                child: Text(_getCharacter(), style: textStyle,
+                child: Text(
+                  _getCharacter(), 
+                  style: TextStyle(
+                    fontSize: 100,
+                    color: Colors.white
+                  ),
                 )
             )
         )
@@ -76,9 +76,7 @@ class _WritingWidgetState extends State<WritingWidget> {
                   child: Flex(
                     direction: isWider ? Axis.horizontal : Axis.vertical,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: isWider
-                        ? [signature, textBox]
-                        : [textBox, signature]
+                    children: isWider ? [signature, textBox] : [textBox, signature]
                   ),
                 ),
                 Expanded(
@@ -100,7 +98,7 @@ class _WritingWidgetState extends State<WritingWidget> {
   void _nextButtonPressed(BuildContext context) {
     setState(() {
       if (_isShowingKana) {
-        _kanaItem = _service.getNextKanaItem();
+        _kanaItem = _kanaService.getNextKanaItem();
         _signatureController.clear();
       }
 
@@ -110,10 +108,12 @@ class _WritingWidgetState extends State<WritingWidget> {
         _isShowingKana = !_isShowingKana;
       }
 
-      if (_kanaItem == null) {
+      var noMoreKanaLeft = _kanaItem == null;
+      
+      if (noMoreKanaLeft) {
         if (widget._mode == StudyMode.practice) {
           widget._mode = StudyMode.test;
-          _service.restart();
+          _kanaService.restart();
           _nextButtonPressed(context);
         } else {
           Navigator.of(context).pop();
